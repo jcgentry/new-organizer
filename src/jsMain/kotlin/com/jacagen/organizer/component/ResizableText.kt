@@ -11,6 +11,7 @@ class ResizableText(value: String) : Text(value=value) {
     }
 }
 
+// TODO Resizing is far from perfect
 fun Container.resizableText(value: String): ResizableText {
     val t = ResizableText(value).apply {
         readonly = true

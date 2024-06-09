@@ -28,14 +28,11 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
         }
     }
 
-    // TODO Resizing is far from perfect
     private fun row(indent: Int, node: T, label: (T) -> String) {
         vPanel {
             var thisText: Text? = null  // yuck
             hPanel {
-                val div = Div()
-                div.width = (indent * 50).px
-                add(div)
+                spacer(indent)
                 val panel = FormPanel<T>()
                 panel.apply {
                     val t = resizableText(label(node))
