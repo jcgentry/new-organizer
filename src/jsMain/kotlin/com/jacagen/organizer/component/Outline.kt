@@ -5,11 +5,11 @@ import io.kvision.core.Container
 import io.kvision.form.FormPanel
 import io.kvision.form.formPanel
 import io.kvision.form.text.text
-import io.kvision.html.Table
-import io.kvision.html.div
-import io.kvision.html.td
-import io.kvision.html.tr
+import io.kvision.html.*
+import io.kvision.panel.hPanel
+import io.kvision.panel.vPanel
 import io.kvision.table.Row
+import io.kvision.utils.px
 import kotlin.text.Typography.nbsp
 
 class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) : Table() {
@@ -22,10 +22,13 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
     }
 
     private fun row(indent: Int, node: T, label: (T) -> String) {
-        tr {
-            td {
+        vPanel {
+            hPanel {
+                val div = Div()
+                div.width = (indent * 50).px
+                add(div)
                 val panel = FormPanel<T>()
-                panel.apply { div(nbsp.toString().repeat(indent * 10) + label(node)) }
+                panel.apply { div(label(node)) }
                 add(panel)
             }
         }
