@@ -43,7 +43,9 @@ class App : Application() {
 
     override fun start(state: Map<String, Any>) {
         root("kvapp") {
+            div("Start of app")
             vPanel {
+                div("vPanel")
                 outline(rootNode, Node::label, Node::children)
             }
         }
