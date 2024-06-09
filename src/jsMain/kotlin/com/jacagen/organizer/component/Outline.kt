@@ -38,15 +38,8 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
                 add(div)
                 val panel = FormPanel<T>()
                 panel.apply {
-                    val t = text(value = label(node))
-                        .apply { readonly = true }
+                    val t = resizableText(label(node))
                     thisText = t
-                    t.width = (t.value!!.length).ch
-                    t.onInputLaunch {
-                        console.log("input")
-                        width = (this.value!!.length).ch
-                        console.log("Set width to $width")
-                    }
                 }
                 add(panel)
             }.onClickLaunch {
