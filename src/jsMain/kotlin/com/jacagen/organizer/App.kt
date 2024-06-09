@@ -44,20 +44,9 @@ class App : Application() {
     override fun start(state: Map<String, Any>) {
         root("kvapp") {
             vPanel {
-                outline {
-                    for ((indent, thisNode) in flattenNode(node)) {
-                        row(indent, thisNode.label)
-                    }
-                }
+                outline(rootNode, Node::label, Node::children)
             }
         }
-    }
-}
-
-private fun flattenNode(node: Node, level: Int = 0): Sequence<Pair<Int, Node>> = sequence {
-    yield(Pair(level, node))
-    for (c: Node in node.children) {
-        yieldAll(flattenNode(c, level + 1))     // Too much recursion?
     }
 }
 
