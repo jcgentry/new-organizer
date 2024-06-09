@@ -2,17 +2,24 @@ package com.jacagen.organizer.component
 
 import com.jacagen.organizer.Node
 import io.kvision.core.Container
+import io.kvision.core.onClickLaunch
+import io.kvision.core.onInputLaunch
 import io.kvision.form.FormPanel
 import io.kvision.form.formPanel
+import io.kvision.form.text.Text
 import io.kvision.form.text.text
 import io.kvision.html.*
 import io.kvision.panel.hPanel
 import io.kvision.panel.vPanel
 import io.kvision.table.Row
+import io.kvision.utils.auto
+import io.kvision.utils.ch
 import io.kvision.utils.px
 import kotlin.text.Typography.nbsp
 
 class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) : Table() {
+    var enabledRow: Text? = null
+
     init {
         apply {
             for ((indent, thisNode) in flattenNode(root, children)) {
@@ -21,15 +28,31 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
         }
     }
 
+    // TODO Resizing is far from perfect
     private fun row(indent: Int, node: T, label: (T) -> String) {
         vPanel {
+            var thisText: Text? = null  // yuck
             hPanel {
                 val div = Div()
                 div.width = (indent * 50).px
                 add(div)
                 val panel = FormPanel<T>()
-                panel.apply { div(label(node)) }
+                panel.apply {
+                    val t = text(value = label(node))
+                        .apply { readonly = true }
+                    thisText = t
+                    t.width = (t.value!!.length).ch
+                    t.onInputLaunch {
+                        console.log("input")
+                        width = (this.value!!.length).ch
+                        console.log("Set width to $width")
+                    }
+                }
                 add(panel)
+            }.onClickLaunch {
+                enabledRow?.readonly = true
+                enabledRow = thisText
+                thisText?.readonly = false
             }
         }
     }
