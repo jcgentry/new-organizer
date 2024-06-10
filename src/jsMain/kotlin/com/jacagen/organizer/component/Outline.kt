@@ -10,6 +10,7 @@ import io.kvision.form.text.Text
 import io.kvision.form.text.text
 import io.kvision.html.*
 import io.kvision.panel.HPanel
+import io.kvision.panel.VPanel
 import io.kvision.panel.hPanel
 import io.kvision.panel.vPanel
 import io.kvision.table.Row
@@ -33,17 +34,25 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
     }
 
     private fun row(indent: Int, node: T, label: (T) -> String) {
-        vPanel {
-            hPanel {
-                spacer(indent)
-                val panel = FormPanel<T>()
-                panel.apply {
-                    val t = resizableText(label(node))
-                }
-                add(panel)
+        val row = OutlineRow(indent, node, label)
+        add(row)
+    }
+}
+
+class OutlineRow<T : Any>(val indent: Int, val node: T, val label: (T) -> String) : VPanel() {
+    init {
+        hPanel {
+            spacer(indent)
+            val panel = FormPanel<T>()
+            panel.apply {
+                val t = resizableText(label(node))
             }
-        }.onClickLaunch {
-            findChild<HPanel>().findChild<Text>().readonly = false
+            add(panel)
+        }
+        onClickLaunch {
+            console.log(getChildren())
+            console.log(findChild<HPanel>().getChildren())
+            findChild<HPanel>().findChild<FormPanel<T>>().findChild<Text>().readonly = false
         }
     }
 }
