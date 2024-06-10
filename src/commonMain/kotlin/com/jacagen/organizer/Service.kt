@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class Node(
     val label: String,
     val children: List<Node> = emptyList(),
+    val parent: Node? = null,
 )
 
 

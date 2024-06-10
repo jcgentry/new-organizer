@@ -1,9 +1,7 @@
 package com.jacagen.organizer.component
 
 import com.jacagen.organizer.Node
-import io.kvision.core.Container
-import io.kvision.core.onClickLaunch
-import io.kvision.core.onInputLaunch
+import io.kvision.core.*
 import io.kvision.form.FormPanel
 import io.kvision.form.formPanel
 import io.kvision.form.text.Text
@@ -28,24 +26,24 @@ class Outline<T : Any>(root: T, label: (T) -> String, children: (T) -> List<T>) 
     init {
         apply {
             for ((indent, thisNode) in flattenNode(root, children)) {
-                row(indent, thisNode, label)
+                row(indent, thisNode, label, { console.log("Outline affected") })
             }
         }
     }
 
-    private fun row(indent: Int, node: T, label: (T) -> String) {
-        val row = OutlineRow(indent, node, label)
+    private fun row(indent: Int, node: T, label: (T) -> String, onEnter: () -> Unit) {
+        val row = OutlineRow(indent, node, label, onEnter)
         add(row)
     }
 }
 
-class OutlineRow<T : Any>(val indent: Int, val node: T, val label: (T) -> String) : VPanel() {
+class OutlineRow<T : Any>(val indent: Int, val node: T, val label: (T) -> String, onEnter: () -> Unit) : VPanel() {
     init {
         hPanel {
             spacer(indent)
             val panel = FormPanel<T>()
             panel.apply {
-                val t = resizableText(label(node))
+                resizableText(label(node), onEnter)
             }
             add(panel)
         }
@@ -55,6 +53,7 @@ class OutlineRow<T : Any>(val indent: Int, val node: T, val label: (T) -> String
             findChild<HPanel>().findChild<FormPanel<T>>().findChild<Text>().readonly = false
         }
     }
+
 }
 
 
