@@ -4,12 +4,12 @@ import io.kvision.annotations.KVService
 import kotlinx.serialization.Serializable
 
 
-@Serializable
-data class Node(
-    val label: String,
-    val children: List<Node> = emptyList(),
-    val parent: Node? = null,
-)
+//@Serializable
+//data class Node(
+//    val label: String,
+//    val children: List<Node> = emptyList(),
+//    val parent: Node? = null,
+//)
 
 
 

@@ -45,7 +45,7 @@ kotlin {
                 outputFileName = "main.bundle.js"
             }
             runTask {
-                sourceMaps = false
+                //sourceMaps = false
                 devServer = KotlinWebpackConfig.DevServer(
                     open = false,
                     port = 3000,
@@ -99,6 +99,7 @@ kotlin {
                 implementation("io.kvision:kvision-fontawesome:$kvisionVersion")
                 implementation("io.kvision:kvision-state:$kvisionVersion")
                 implementation("io.kvision:kvision-tom-select-remote:$kvisionVersion")
+                implementation("app.softwork:kotlinx-uuid-core-js:0.0.25")
             }
         }
         val jsTest by getting {

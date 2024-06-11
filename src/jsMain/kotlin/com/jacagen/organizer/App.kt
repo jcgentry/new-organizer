@@ -1,5 +1,6 @@
 package com.jacagen.organizer
 
+import com.jacagen.organizer.component.TaskComponent
 import com.jacagen.organizer.component.outline
 import io.kvision.*
 import io.kvision.core.KVScope
@@ -23,29 +24,27 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.uuid.UUID
 
 
-val rootNode = Node(
-    "\$root",
-    listOf(
-        Node("Entertain regularly"),
-        Node(
-            "Chris's birthday",
-            listOf(
-                Node("Figure out plans for Chris's birthday"),
-            )
-        )
-    )
-)
+actual fun newGuid(): Guid = UUID().toString()
+
+fun testTree(): Tree<Task> {
+    val tree = newTree(Task("\$ROOT"))
+    AddNode(tree.root.id, Task("Entertain regularly")).apply(tree)
+    val t = AddNode(tree.root.id, Task("Chris's birthday")).apply(tree)
+    AddNode(t.id, Task("Figure out plans for Chris's birthday")).apply(tree)
+    return tree
+}
+
 
 class App : Application() {
-    val node = rootNode
+    val tree = testTree()
 
     override fun start(state: Map<String, Any>) {
+        console.log("Starting")
         root("kvapp") {
-            vPanel {
-                outline(rootNode, Node::label, Node::children)
-            }
+            outline(tree) { t -> TaskComponent(t) }
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.jacagen.organizer
 
+actual fun newGuid(): Guid = TODO()
+
 actual class CharacterService: ICharacterService {
     override suspend fun getCharacters(): List<MovieCharacter> {
         return Repository.getCharacters()
