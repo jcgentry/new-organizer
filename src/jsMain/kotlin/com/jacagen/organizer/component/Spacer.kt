@@ -5,7 +5,7 @@ import io.kvision.html.Div
 import io.kvision.utils.px
 
 // TODO Can we make supertype more general?
-class Spacer(private val size: Int) : Div() {
+class Spacer(size: Int) : Div() {
     init {
         width = (size * 50).px
     }

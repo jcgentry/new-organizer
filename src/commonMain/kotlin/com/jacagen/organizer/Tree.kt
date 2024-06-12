@@ -2,10 +2,6 @@ package com.jacagen.organizer
 
 import kotlinx.serialization.Serializable
 
-typealias Guid = String
-
-expect fun newGuid(): Guid
-
 @Serializable
 data class Tree<T>(val root: Node<T>) {
     operator fun get(id: Guid): Node<T> = search(id, mutableListOf(root))
@@ -39,17 +35,5 @@ data class Node<T>(
     val parent: Node<T>?,
     val children: MutableList<Node<T>> = mutableListOf()
 )
-@Serializable
-sealed interface Operation<T, R> {
-    fun apply(tree: Tree<T>): R
-}
 
-@Serializable
-data class AddNode<T>(val parent: Guid, val payload: T): Operation<T, Node<T>> {
-    override fun apply(tree: Tree<T>): Node<T> {
-        val parentNode = tree[parent]
-        val newNode = Node(newGuid(), payload, parentNode)
-        parentNode.children.add(newNode)
-        return newNode
-    }
-}
+
