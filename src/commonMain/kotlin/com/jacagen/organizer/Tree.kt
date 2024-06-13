@@ -3,10 +3,10 @@ package com.jacagen.organizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Tree<T>(val root: Node<T>) {
-    operator fun get(id: Guid): Node<T> = search(id, mutableListOf(root))
+data class Tree<T>(var root: Node<T>? = null, val creator: () -> T) {
+    operator fun get(id: Guid): Node<T> = search(id, mutableListOf(root!!))
 
-    fun depthFirst() = depthFirstYield(root)
+    fun depthFirst() = depthFirstYield(root!!)
 
     private fun depthFirstYield(node: Node<T>, level: Int = 0): Sequence<Pair<Node<T>, Int>> = sequence {
         yield(Pair(node, level))
@@ -26,14 +26,33 @@ data class Tree<T>(val root: Node<T>) {
     }
 }
 
-fun <T> newTree(root: T) = Tree(Node(newGuid(), root, parent = null, children = mutableListOf()))
+fun <T> newTree(root: T, creator: () -> T): Tree<T> {
+    val tree = Tree(creator = creator)
+    val node = Node(
+        newGuid(),
+        root,
+        parent = null,
+        children = mutableListOf(),
+        tree,
+    )
+    tree.root = node
+    return tree
+}
 
 @Serializable
 data class Node<T>(
     val id: Guid,
     val payload: T,
     val parent: Node<T>?,
-    val children: MutableList<Node<T>> = mutableListOf()
-)
-
+    val children: MutableList<Node<T>> = mutableListOf(),
+    val tree: Tree<T>,
+) {
+    fun newNodeAfter(): Node<T>{
+        val newElement = tree.creator()
+        val newNode = Node(newGuid(), newElement, parent, tree = tree)
+        val myIndex = parent!!.children.indexOf(this)
+        parent.children.add(myIndex + 1, newNode)
+        return newNode
+    }
+}
 
