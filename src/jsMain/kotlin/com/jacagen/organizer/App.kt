@@ -3,6 +3,8 @@ package com.jacagen.organizer
 import com.jacagen.organizer.component.TaskComponent
 import com.jacagen.organizer.component.outline
 import io.kvision.*
+import io.kvision.core.onClickLaunch
+import io.kvision.html.button
 import io.kvision.panel.root
 
 fun testTree(): Tree<Task> {
@@ -18,11 +20,15 @@ class App : Application() {
 
     override fun start(state: Map<String, Any>) {
         root("kvapp") {
-           outline(tree,
+           val outline = outline(tree,
                 containerFun = { t ->
                     TaskComponent(t)
                 },
-            )
+           )
+            button("Show outline").onClickLaunch {
+                console.log(outline.tree.toString())
+            }
+
         }
     }
 }

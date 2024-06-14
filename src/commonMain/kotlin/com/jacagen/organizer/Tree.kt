@@ -24,6 +24,11 @@ data class Tree<T>(var root: Node<T>? = null, val creator: () -> T) {
             }
         }
     }
+
+    override fun toString(): String = depthFirst().map { (n, i) ->
+        "\t".repeat(i) + n
+    }
+        .joinToString("\n")
 }
 
 fun <T> newTree(root: T, creator: () -> T): Tree<T> {
@@ -47,12 +52,14 @@ data class Node<T>(
     val children: MutableList<Node<T>> = mutableListOf(),
     val tree: Tree<T>,
 ) {
-    fun newNodeAfter(): Node<T>{
+    fun newNodeAfter(): Node<T> {
         val newElement = tree.creator()
         val newNode = Node(newGuid(), newElement, parent, tree = tree)
         val myIndex = parent!!.children.indexOf(this)
         parent.children.add(myIndex + 1, newNode)
         return newNode
     }
+
+    override fun toString() = payload.toString()
 }
 

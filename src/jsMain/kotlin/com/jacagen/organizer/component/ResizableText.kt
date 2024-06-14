@@ -28,6 +28,11 @@ class ResizableText(textVal: String) : Text() {
         }
     }
 
+    override fun focus() {
+        console.log("FOCUS!!!!!!!!!!!!!")
+        super.focus()
+    }
+
     private fun doResize() {   // TODO make private-er
         if (value == null)
             width = 10.ch
