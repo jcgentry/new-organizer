@@ -1,6 +1,4 @@
-[2024-06-14 15:01:02,169]-[main] INFO  Application - Application started in 0.285 seconds.
-[2024-06-14 15:01:02,261]-[main] INFO  Application - Responding at http://0.0.0.0:8080
-[2024-06-14 15:01:59,774]-[main] INFO  Application - Application started in 0.266 seconds.
-[2024-06-14 15:01:59,853]-[main] INFO  Application - Responding at http://0.0.0.0:8080
-[2024-06-14 15:05:09,694]-[main] INFO  Application - Application started in 0.261 seconds.
-[2024-06-14 15:05:09,771]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-06-19 17:59:33,141]-[main] INFO  Application - Application started in 0.28 seconds.
+[2024-06-19 17:59:33,233]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-06-19 18:39:47,132]-[main] INFO  Application - Application started in 0.241 seconds.
+[2024-06-19 18:39:47,205]-[main] INFO  Application - Responding at http://0.0.0.0:8080

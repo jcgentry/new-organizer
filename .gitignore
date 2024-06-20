@@ -5,3 +5,6 @@ out/
 *.ipr
 *.iws
 *.idea
+
+node_modules/
+logs/

@@ -1,15 +1,30 @@
 package test.com.jacagen.organizer
 
+import com.jacagen.organizer.App
+import io.kvision.test.DomSpec
 import io.kvision.test.SimpleSpec
+import io.kvision.test.WSpec
+import kotlinx.browser.document
+import org.w3c.dom.Node
+import org.w3c.dom.asList
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-class AppSpec : SimpleSpec {
+class AppSpec : WSpec {
 
     @Test
-    fun render() {
-        run {
-            assertTrue(true, "Dummy test")
+    fun initialState() {
+        runW { _, _ ->
+            val app = App()
+            app.start()
+            dumpNodes(document)
         }
+    }
+}
+
+private fun dumpNodes(n: Node, level: Int = 0) {
+    println("\t".repeat(level) + n.nodeName + " " + n.nodeValue)
+    for (c in n.childNodes.asList()) {
+        dumpNodes(c, level + 1)
     }
 }
