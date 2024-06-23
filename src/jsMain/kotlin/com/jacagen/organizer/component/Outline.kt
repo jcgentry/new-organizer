@@ -23,7 +23,7 @@ class Outline<T : Any>(
             if (level == 0)
                 root = row
             add(row)
-            addEnterHandler(row)
+            addHandlers(row)
         }
         this.root = root!!
     }
@@ -37,15 +37,21 @@ class Outline<T : Any>(
         val newRow = OutlineRow(parent.indent + 1, child, containerFun)
         parent.parent!!.add(newRow)
         if (addRowHandler != null)
-            addEnterHandler(newRow)
+            addHandlers(newRow)
         return newRow
     }
 
-    private fun addEnterHandler(row: OutlineRow<T>) {
+    private fun addHandlers(row: OutlineRow<T>) {
         row.onEvent {   // TODO onEventLaunch?
             keydown = { e ->
-                if (e.key == "Enter") {
-                    enterHandler(row, e)
+                when (e.key) {
+                    "Enter" -> enterHandler(row, e)
+                    "ArrowRight" ->
+                        if (e.altKey)
+                            console.log("Indent")
+                    "ArrowLeft" ->
+                        if (e.altKey)
+                            console.log("Dedent")
                 }
             }
         }
@@ -90,14 +96,14 @@ class Outline<T : Any>(
             if (((row.parent!!.getChildren()[i]) as OutlineRow<*>).indent <= row.indent) {
                 row.parent!!.add(myIndex + 1, newRow)
                 if (addRowHandler != null)
-                    addEnterHandler(newRow)
+                    addHandlers(newRow)
                 newRow.focus()
                 return
             }
         }
         row.parent!!.add(row.parent!!.getChildren().size, newRow)
         if (addRowHandler != null)
-            addEnterHandler(newRow)
+            addHandlers(newRow)
         newRow.focus()
     }
 }
