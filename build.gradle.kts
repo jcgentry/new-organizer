@@ -7,6 +7,7 @@ plugins {
     kotlin("multiplatform") version kotlinVersion
     val kvisionVersion: String by System.getProperties()
     id("io.kvision") version kvisionVersion
+
 }
 
 version = "1.0.0-SNAPSHOT"
@@ -59,7 +60,8 @@ kotlin {
             }
             testTask {
                 useKarma {
-                    useChromeHeadless()
+                    //useChromeHeadless()
+                    useChrome()
                 }
             }
         }

@@ -16,16 +16,17 @@ class ResizableText(textVal: String) : Text() {
     init {
         val store = ObservableValue(textVal)
         bindTo(store)
+        console.log("Bound text to $textVal")
         onInputLaunch { doResize() }
         doResize()
 
-        onEvent() {   // TODO onEventLaunch?
-            keydown = { e ->
-                if (e.key == "Enter") {
-                    e.preventDefault()
-                }
-            }
-        }
+//        onEvent() {   // TODO onEventLaunch?
+//            keydown = { e ->
+//                if (e.key == "Enter") {
+//                    e.preventDefault()
+//                }
+//            }
+//        }
     }
 
     override fun focus() {

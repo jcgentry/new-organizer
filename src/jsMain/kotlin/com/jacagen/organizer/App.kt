@@ -1,36 +1,33 @@
 package com.jacagen.organizer
 
-import com.jacagen.organizer.component.TaskComponent
-import com.jacagen.organizer.component.outline
 import io.kvision.*
 import io.kvision.core.onClickLaunch
 import io.kvision.html.button
 import io.kvision.panel.root
 
-fun testTree(): Tree<Task> {
-    val tree = newTree(Task(newGuid(), "\$ROOT")) { Task(newGuid(), "") }
-    AddNode(tree.root!!.payload.id, newGuid(), label = "Entertain regularly").apply(tree)
-    val t = AddNode(tree.root!!.payload.id, newGuid(), label = "Chris's birthday").apply(tree)
-    AddNode(t.payload.id, newGuid(), label = "Figure out plans for Chris's birthday").apply(tree)
-    return tree
-}
-
 class App : Application() {
-    val tree = testTree()
+    val controller = Controller(console)
+//    val tree = testTree()
 
     override fun start() {
+        println("Starting application")
         root("kvapp") {
-           val outline = outline(tree,
-                containerFun = { t ->
-                    TaskComponent(t)
-                },
-           )
-            button("Show outline").onClickLaunch {
-                console.log(outline.tree.toString())
+            try {
+                console.log("Adding outline")
+                controller.outline.root.nodeContainer.addAfterInsertHook { vnode ->
+                    console.log("After insert hook")
+                }
+                add(controller.outline)
+                console.log("Added outline")
+            } catch (e: Exception) {
+                console.log(e.message ?: "Something went wrong")
             }
-            button("Add test tree").onClickLaunch {  }
-
+            button("Show outline").onClickLaunch {
+                console.log(controller.tree.toString())
+            }
+            button("Add test tree").onClickLaunch { controller.testTree() }
         }
+        console.log("Set up root")
     }
 }
 
