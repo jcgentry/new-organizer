@@ -1,36 +1,32 @@
 package com.jacagen.organizer
 
-import com.jacagen.organizer.component.Outline
+import com.jacagen.organizer.component.OutlineHelper
+import com.jacagen.organizer.component.OutlineNode
 import com.jacagen.organizer.component.TaskComponent
 import kotlin.js.Console
 
+private object Helper : OutlineHelper<Task, TaskComponent> {
+    override fun createComponent(payload: Task) = TaskComponent(payload)
+
+    override fun newNodeRequestor(parent: Node<Task>, position: Int?): Node<Task> {
+        console.log("Adding new node to $parent at position $position")
+        val newPayload = Task(newGuid(), "")
+        val newNode = Node(newPayload, parent, tree = parent.tree)
+        parent.children.add(if (position == null) parent.children.size else position, newNode)
+        return newNode
+    }
+
+}
+
 class Controller(console: Console) {
-    val outline: Outline<Task>
+    val outline: OutlineNode<Task, TaskComponent>
     val tree: Tree<Task> = Tree { s -> console.log(s) }
 
     init {
         val rootOp = AddNode(parent = null, newGuid(), "\$ROOT")
-        rootOp.apply(tree) { s -> console.log(s) }
-        outline = Outline(tree,
-            containerFun = { t ->
-                val c = TaskComponent(t)
-                c.onTitleUpdateLaunch { title ->
-                    titleUpdated(t, title)
-                }
-                c
-            },
-            newPayload = {
-                Task(newGuid(), "")
-            })
+        val newNode = rootOp.apply(tree) { s -> console.log(s) }
+        outline = OutlineNode(newNode, outlineParent = null, Helper)
         emit(rootOp)
-        outline.onRowAdded { parentPayload, newPayload, index ->
-            console.log("Adding row for $newPayload")
-            addRow(
-                parentPayload,
-                newPayload,
-                index
-            )
-        }
     }
 
     fun titleUpdated(task: Task, newTitle: String) {
@@ -42,17 +38,6 @@ class Controller(console: Console) {
         emit(op)
     }
 
-    fun addRow(parent: Task, task: Task, index: Int?): Task {
-        val parentNode = tree.getNode { t -> t == parent }
-        val op = AddNode(
-            parentNode.payload.id,
-            task.id, task.title,
-            if (index == null) parentNode.children.size else index
-        )
-        val newNode = op.apply(tree) { s -> console.log(s) }
-        return newNode.payload
-    }
-
     private fun <R> emit(@Suppress("UNUSED_PARAMETER") op: Operation<R>) {
         /* Nothing for now */
     }
@@ -60,15 +45,15 @@ class Controller(console: Console) {
     fun testTree(): Tree<Task> {
         val op1 = AddNode(tree.root!!.payload.id, newGuid(), title = "Entertain regularly")
         val n1 = op1.apply(tree) { s -> console.log(s) }
-        outline.addChild(outline.root, n1.payload)
+        outline.addChild(outline.getChildren().size, n1, Helper)
         emit(op1)
         val op2 = AddNode(tree.root!!.payload.id, newGuid(), title = "Chris's birthday")
         val n2 = op2.apply(tree) { s -> console.log(s) }
-        val o2 = outline.addChild(outline.root, n2.payload)
+        val cbOutlineNode = outline.addChild(outline.getChildren().size, n2, Helper)
         emit(op2)
         val op3 = AddNode(n2.payload.id, newGuid(), title = "Figure out plans for Chris's birthday")
         val n3 = op3.apply(tree) { s -> console.log(s) }
-        outline.addChild(o2, n3.payload)
+        cbOutlineNode.addChild(cbOutlineNode.getChildren().size, n3, Helper)
         emit(op3)
         return tree
     }

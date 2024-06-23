@@ -1,157 +1,107 @@
 package com.jacagen.organizer.component
 
-import com.jacagen.organizer.Tree
-import io.kvision.core.Container
+import com.jacagen.organizer.Node
+import io.kvision.core.Component
 import io.kvision.core.onEvent
 import io.kvision.panel.HPanel
 import io.kvision.panel.VPanel
-import org.w3c.dom.events.Event
-import org.w3c.dom.events.KeyboardEvent
+import io.kvision.panel.hPanel
+import io.kvision.panel.vPanel
 
+interface OutlineHelper<T, C : Component> {
+    fun createComponent(payload: T): C
+    fun newNodeRequestor(parent: Node<T>, position: Int?): Node<T>
+}
 
-class Outline<T : Any>(
-    tree: Tree<T>,
-    private val containerFun: (T) -> Container,
-    private val newPayload: () -> T,
+class OutlineNode<T, C : Component>(
+    private val node: Node<T>,
+    private val outlineHelper: OutlineHelper<T, C>,
 ) : VPanel() {
-    val root: OutlineRow<T>
-    private var addRowHandler: ((T, T, Int?) -> Unit)? = null
+
+    /*
+        <OutlineNode: VPanel>
+            <hPanel>
+                <spacer n>
+                <TaskComponent>
+            <hPanel>
+            <hPanel>
+                <spacer 1>
+                <OutlineNode>
+     */
+    private var outlineParent: OutlineNode<T, C>? = null
+
+
+    private val nodeComponent = outlineHelper.createComponent(node.payload)
+    private val mainHPanel: HPanel
+    private val childrenVPanel: VPanel
 
     init {
-        var root: OutlineRow<T>? = null
-        for ((node, level) in tree.depthFirst()) {
-            val row = OutlineRow(level, node.payload, containerFun)
-            if (level == 0)
-                root = row
-            add(row)
-            addHandlers(row)
+        mainHPanel = hPanel {
+            add(nodeComponent)
         }
-        this.root = root!!
+        childrenVPanel = vPanel {
+            for (c in node.children) {
+                hPanel {
+                    spacer(1)
+                    val child = OutlineNode(c, outlineHelper))
+                    child.outlineParent = this@OutlineNode
+                    add(child)
+                }
+            }
+        }
+        registerHandlers()
     }
 
-    fun childrenRows(): List<OutlineRow<T>> = getChildren().map { it.unsafeCast<OutlineRow<T>>() }
-
-    fun onRowAdded(f: (T, T, Int?) -> Unit) {
-        // TODO Need to handle existing rows
-        addRowHandler = f
+    override fun focus() {
+        nodeComponent.focus()
     }
 
-    fun addChild(parent: OutlineRow<T>, child: T): OutlineRow<T> {
-        val newRow = OutlineRow(parent.indent + 1, child, containerFun)
-        parent.parent!!.add(newRow)
-        if (addRowHandler != null)
-            addHandlers(newRow)
-        return newRow
+    fun addChild(position: Int, child: Node<T>, outlineHelper: OutlineHelper<T, C>): OutlineNode<T, C> {
+        val newNode = OutlineNode(child, this, outlineHelper)
+        val hPanel = HPanel()
+        hPanel.add(Spacer(1))
+        hPanel.add(newNode)
+        add(position, hPanel)
+        return newNode
     }
 
-    private fun addHandlers(row: OutlineRow<T>) {
-        row.onEvent {   // TODO onEventLaunch?
+    fun myIndex(): Int {
+        console.log("Outline parent is $outlineParent")
+        val outlineParent = outlineParent!!
+        if (outlineParent is OutlineNode)
+            console.log("Outline parent is outline node")
+        val siblings = outlineParent.getChildren().subList(1, outlineParent.getChildren().size)
+        console.log("Siblings are ${siblings}")
+        for (s in siblings) {
+            if (s is OutlineNode<*, *>) {
+                console.log("Sibling is OutlineNode")
+            }
+            console.log("Sibling is ${js("typeof s")}")
+        }
+        val idx = siblings.indexOf(this)
+        console.log("Index of ${node.payload} in ${outlineParent.node} is $idx")
+        return idx
+    }
+
+    private fun registerHandlers() {
+        mainHPanel.onEvent {   // TODO onEventLaunch?
             keydown = { e ->
                 when (e.key) {
-                    "Enter" -> enterHandler(row, e)
-                    "ArrowRight" ->
-                        rightHandler(row, e)
-                    "ArrowLeft" ->
-                        if (e.metaKey) {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            console.log("Dedent")
-                        }
-                    "ArrowUp" ->
-                        if (e.metaKey) {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            console.log("Up")
-                        }
-                    "ArrowDown" ->
-                        if (e.metaKey) {
-                            e.preventDefault()
-                            e.stopPropagation()
-                            console.log("Down")
-                        }
+                    "Enter" -> {
+                        val newIndex = myIndex() + 1
+                        val newNode = outlineHelper.newNodeRequestor(node.parent!!, newIndex)
+                        outlineParent!!.addChild(newIndex, newNode, outlineHelper)
+                    }
                 }
             }
         }
     }
 
-    private fun addRowAfter(row: OutlineRow<T>, newRow: OutlineRow<T>) {
-        val myIndex = row.parent!!.getChildren().indexOf(row)
-        for (i in (myIndex + 1)..<(row.parent!!.getChildren().size)) {
-            if (((row.parent!!.getChildren()[i]) as OutlineRow<*>).indent <= row.indent) {
-                row.parent!!.add(myIndex + 1, newRow)
-                if (addRowHandler != null)
-                    addHandlers(newRow)
-                newRow.focus()
-                return
-            }
-        }
-        row.parent!!.add(row.parent!!.getChildren().size, newRow)
-        if (addRowHandler != null)
-            addHandlers(newRow)
-        newRow.focus()
-    }
-
-    /* Handlers */
-
-    private fun rightHandler(row: OutlineRow<T>, e: KeyboardEvent) {
-        if (e.metaKey) {
-            e.preventDefault()
-            e.stopPropagation()
-            console.log("Indent")
-        }
-    }
-
-    private fun enterHandler(row: OutlineRow<T>, e: Event) {
-        e.preventDefault()
-        e.stopPropagation()
-        val newPayload = newPayload()
-        if (row == root) {
-            val newRow = addChild(root, newPayload())
-            addRowHandler!!(root.payload, newRow.payload, null)
-            newRow.focus()
-        } else {
-            val newRow = OutlineRow(row.indent, newPayload, containerFun)
-            addRowAfter(row, newRow)
-            val (idx, parent: OutlineRow<T>?) = locateRow(newRow)
-            addRowHandler!!(parent!!.payload, newRow.payload, idx)
-            newRow.focus()
-        }
-    }
-
-    /* Row locators */
-
-    /** Figure out index of row relative to its conceptual parent */
-    private fun locateRow(newRow: OutlineRow<T>): Pair<Int, OutlineRow<T>?> {
-        var idx = 0
-        var parent: OutlineRow<T>? = null
-        for (c in newRow.parent!!.getChildren()) {
-            val childRow = c.unsafeCast<OutlineRow<T>>()
-            if (childRow == newRow)
-                break
-            else if (childRow.indent == newRow.indent - 1)
-                parent = childRow
-            else if (childRow.indent == newRow.indent)
-                idx++
-        }
-        return Pair(idx, parent)
-    }
 }
 
-class OutlineRow<T : Any>(
-    val indent: Int,
-    val payload: T,
-    containerFun: (T) -> Container,
-) : HPanel() {
-    val nodeContainer: Container
 
-    init {
-        spacer(indent)
-        nodeContainer = containerFun(payload)
-        add(nodeContainer)
-    }
 
-    override fun focus() {
-        nodeContainer.focus()
-        super.focus()
-    }
-}
+
+
+
+
