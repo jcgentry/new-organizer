@@ -6,6 +6,7 @@ import io.kvision.core.onEvent
 import io.kvision.panel.HPanel
 import io.kvision.panel.VPanel
 import org.w3c.dom.events.Event
+import org.w3c.dom.events.KeyboardEvent
 
 
 class Outline<T : Any>(
@@ -28,6 +29,8 @@ class Outline<T : Any>(
         this.root = root!!
     }
 
+    fun childrenRows(): List<OutlineRow<T>> = getChildren().map { it.unsafeCast<OutlineRow<T>>() }
+
     fun onRowAdded(f: (T, T, Int?) -> Unit) {
         // TODO Need to handle existing rows
         addRowHandler = f
@@ -47,13 +50,54 @@ class Outline<T : Any>(
                 when (e.key) {
                     "Enter" -> enterHandler(row, e)
                     "ArrowRight" ->
-                        if (e.altKey)
-                            console.log("Indent")
+                        rightHandler(row, e)
                     "ArrowLeft" ->
-                        if (e.altKey)
+                        if (e.metaKey) {
+                            e.preventDefault()
+                            e.stopPropagation()
                             console.log("Dedent")
+                        }
+                    "ArrowUp" ->
+                        if (e.metaKey) {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            console.log("Up")
+                        }
+                    "ArrowDown" ->
+                        if (e.metaKey) {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            console.log("Down")
+                        }
                 }
             }
+        }
+    }
+
+    private fun addRowAfter(row: OutlineRow<T>, newRow: OutlineRow<T>) {
+        val myIndex = row.parent!!.getChildren().indexOf(row)
+        for (i in (myIndex + 1)..<(row.parent!!.getChildren().size)) {
+            if (((row.parent!!.getChildren()[i]) as OutlineRow<*>).indent <= row.indent) {
+                row.parent!!.add(myIndex + 1, newRow)
+                if (addRowHandler != null)
+                    addHandlers(newRow)
+                newRow.focus()
+                return
+            }
+        }
+        row.parent!!.add(row.parent!!.getChildren().size, newRow)
+        if (addRowHandler != null)
+            addHandlers(newRow)
+        newRow.focus()
+    }
+
+    /* Handlers */
+
+    private fun rightHandler(row: OutlineRow<T>, e: KeyboardEvent) {
+        if (e.metaKey) {
+            e.preventDefault()
+            e.stopPropagation()
+            console.log("Indent")
         }
     }
 
@@ -74,6 +118,8 @@ class Outline<T : Any>(
         }
     }
 
+    /* Row locators */
+
     /** Figure out index of row relative to its conceptual parent */
     private fun locateRow(newRow: OutlineRow<T>): Pair<Int, OutlineRow<T>?> {
         var idx = 0
@@ -88,23 +134,6 @@ class Outline<T : Any>(
                 idx++
         }
         return Pair(idx, parent)
-    }
-
-    private fun addRowAfter(row: OutlineRow<T>, newRow: OutlineRow<T>) {
-        val myIndex = row.parent!!.getChildren().indexOf(row)
-        for (i in (myIndex + 1)..<(row.parent!!.getChildren().size)) {
-            if (((row.parent!!.getChildren()[i]) as OutlineRow<*>).indent <= row.indent) {
-                row.parent!!.add(myIndex + 1, newRow)
-                if (addRowHandler != null)
-                    addHandlers(newRow)
-                newRow.focus()
-                return
-            }
-        }
-        row.parent!!.add(row.parent!!.getChildren().size, newRow)
-        if (addRowHandler != null)
-            addHandlers(newRow)
-        newRow.focus()
     }
 }
 
