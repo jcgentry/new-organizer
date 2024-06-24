@@ -25,7 +25,7 @@ class Controller(console: Console) {
     init {
         val rootOp = AddNode(parent = null, newGuid(), "\$ROOT")
         val newNode = rootOp.apply(tree) { s -> console.log(s) }
-        outline = OutlineNode(newNode, outlineParent = null, Helper)
+        outline = OutlineNode(newNode, Helper)
         emit(rootOp)
     }
 
@@ -45,15 +45,15 @@ class Controller(console: Console) {
     fun testTree(): Tree<Task> {
         val op1 = AddNode(tree.root!!.payload.id, newGuid(), title = "Entertain regularly")
         val n1 = op1.apply(tree) { s -> console.log(s) }
-        outline.addChild(outline.getChildren().size, n1, Helper)
+        outline.addChild(n1, 0)
         emit(op1)
         val op2 = AddNode(tree.root!!.payload.id, newGuid(), title = "Chris's birthday")
         val n2 = op2.apply(tree) { s -> console.log(s) }
-        val cbOutlineNode = outline.addChild(outline.getChildren().size, n2, Helper)
+        val cbOutlineNode = outline.addChild(n2, 1)
         emit(op2)
         val op3 = AddNode(n2.payload.id, newGuid(), title = "Figure out plans for Chris's birthday")
         val n3 = op3.apply(tree) { s -> console.log(s) }
-        cbOutlineNode.addChild(cbOutlineNode.getChildren().size, n3, Helper)
+        cbOutlineNode.addChild(n3, 0)
         emit(op3)
         return tree
     }
