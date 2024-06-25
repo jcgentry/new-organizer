@@ -20,7 +20,8 @@ class OutlineNode<T, C : Component>(
     private val outlineHelper: OutlineHelper<T, C>,
 ) : VPanel() {
     init {
-        add(outlineHelper.createComponent(node.payload))
+        val newComponent = outlineHelper.createComponent(node.payload)
+        add(newComponent)
         hPanel {
             spacer(1)
             vPanel()
@@ -28,27 +29,42 @@ class OutlineNode<T, C : Component>(
         registerHandlers()
     }
 
+    override fun focus() {
+        getChildren()[0].focus()
+    }
+
+    fun myChildList(): VPanel {
+        val indentedChildList = getChildren()[1] as HPanel
+        val childList = indentedChildList.getChildren()[1] as VPanel
+        return childList
+    }
+
+    fun parentOutlineNode(): OutlineNode<T, C> {
+        val containingChildList = parent as VPanel
+        val containingIndentedChildList = containingChildList.parent as HPanel
+        return containingIndentedChildList.parent as OutlineNode<T, C>
+    }
+
+    fun containingChildList(): VPanel = parent as VPanel
+
     fun addChild(node: Node<T>, index: Int): OutlineNode<T, C> {
-        val childHPanel = getChildren()[1].unsafeCast<HPanel>()
-        val childVPanel = childHPanel.getChildren()[1].unsafeCast<VPanel>()
         val newOutlineNode = OutlineNode(node, outlineHelper)
-        childVPanel.add(index, newOutlineNode)
+        myChildList().add(index, newOutlineNode)
+        newOutlineNode.focus()
         return newOutlineNode
     }
 
     private fun registerHandlers() {
-        (getChildren()[0] as TaskComponent).onEvent {
+        val myTaskComponent = getChildren()[0] as TaskComponent
+        myTaskComponent.onEvent {
             keydown = { e ->
                 when (e.key) {
                     "Enter" -> {
-                        val target = e.currentTarget!! as TaskComponent
-                        val myOutlineNode = target.parent as OutlineNode<T, C>
-                        val parentVPanel = myOutlineNode.parent as VPanel
-                        val myIndex = parentVPanel.getChildren().indexOf(myOutlineNode)
+                        val containingOutlineNode = myTaskComponent.parent as OutlineNode<T, C>
+                        val containingChildList = containingOutlineNode.parent as VPanel
+                        val myIndex = containingChildList.getChildren().indexOf(containingOutlineNode)
                         val newNode = outlineHelper.newNodeRequestor(node.parent!!, myIndex + 1)
-                        val parentHPanel = parentVPanel.parent as HPanel
-                        val parentOutlineNode = parentHPanel.parent as OutlineNode<T, C>
-                        parentOutlineNode.addChild(newNode, myIndex + 1)
+                        parentOutlineNode().addChild(newNode, myIndex + 1)
                     }
                 }
             }
