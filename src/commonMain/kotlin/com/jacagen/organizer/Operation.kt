@@ -3,8 +3,11 @@ package com.jacagen.organizer
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed interface Operation<R> {
+sealed interface Operation
+
+sealed interface OperationImpl<R> : Operation {
     fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): R
+
 }
 
 @Serializable
@@ -13,7 +16,7 @@ data class AddNode(
     val newNode: Guid,
     val title: String,
     val index: Int? = null,
-) : Operation<Node<Task>> {
+) : OperationImpl<Node<Task>> {
     override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         if (parent == null) {
             tree.root = Node(Task(newNode, title), parent = null, tree = tree)
@@ -36,7 +39,7 @@ data class UpdateTitle(
     val node: Guid,
     val oldTitle: String,
     val newTitle: String
-) : Operation<Node<Task>> {
+) : OperationImpl<Node<Task>> {
     override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         val node = tree.getNode { n ->
             n.id == node

@@ -45,7 +45,7 @@ class Controller(console: Console) {
         emit(op)
     }
 
-    private fun <R> emit(@Suppress("UNUSED_PARAMETER") op: Operation<R>) {
+    private fun emit(@Suppress("UNUSED_PARAMETER") op: Operation) {
         /* Nothing for now */
     }
 
