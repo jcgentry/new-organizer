@@ -18,6 +18,7 @@ interface OutlineHelper<T, C : Component> {
 class OutlineNode<T, C : Component>(
     private val node: Node<T>,
     private val outlineHelper: OutlineHelper<T, C>,
+    private val isRoot: Boolean = false,
 ) : VPanel() {
     init {
         val newComponent = outlineHelper.createComponent(node.payload)
@@ -61,10 +62,18 @@ class OutlineNode<T, C : Component>(
                 when (e.key) {
                     "Enter" -> {
                         val containingOutlineNode = myTaskComponent.parent as OutlineNode<T, C>
-                        val containingChildList = containingOutlineNode.parent as VPanel
-                        val myIndex = containingChildList.getChildren().indexOf(containingOutlineNode)
-                        val newNode = outlineHelper.newNodeRequestor(node.parent!!, myIndex + 1)
-                        parentOutlineNode().addChild(newNode, myIndex + 1)
+                        if (containingOutlineNode.isRoot) {
+                            /* I'm the top node--add a child to me */
+                            val childCount = myChildList().getChildren().size
+                            val newNode = outlineHelper.newNodeRequestor(node, childCount)
+                            containingOutlineNode.addChild(newNode, childCount)
+                        } else {
+                            /* I'm an inner node--add a sibling */
+                            val containingChildList = containingOutlineNode.parent as VPanel
+                            val myIndex = containingChildList.getChildren().indexOf(containingOutlineNode)
+                            val newNode = outlineHelper.newNodeRequestor(node.parent!!, myIndex + 1)
+                            parentOutlineNode().addChild(newNode, myIndex + 1)
+                        }
                     }
                 }
             }

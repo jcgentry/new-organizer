@@ -5,8 +5,14 @@ import com.jacagen.organizer.component.OutlineNode
 import com.jacagen.organizer.component.TaskComponent
 import kotlin.js.Console
 
-private object Helper : OutlineHelper<Task, TaskComponent> {
-    override fun createComponent(payload: Task) = TaskComponent(payload)
+private class Helper(private val controller: Controller) : OutlineHelper<Task, TaskComponent> {
+    override fun createComponent(payload: Task): TaskComponent {
+        val component = TaskComponent(payload)
+        component.onTitleUpdateLaunch { s ->
+            controller.titleUpdated(payload ,s)
+        }
+        return component
+    }
 
     override fun newNodeRequestor(parent: Node<Task>, position: Int?): Node<Task> {
         console.log("Adding new node to $parent at position $position")
@@ -23,9 +29,10 @@ class Controller(console: Console) {
     val tree: Tree<Task> = Tree { s -> console.log(s) }
 
     init {
+        val helper = Helper(this)
         val rootOp = AddNode(parent = null, newGuid(), "\$ROOT")
         val newNode = rootOp.apply(tree) { s -> console.log(s) }
-        outline = OutlineNode(newNode, Helper)
+        outline = OutlineNode(newNode, helper, isRoot = true)
         emit(rootOp)
     }
 
