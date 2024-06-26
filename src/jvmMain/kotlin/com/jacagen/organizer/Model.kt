@@ -4,6 +4,8 @@ object Model {
     private val operationService = OperationService()
 
     suspend fun save(op: Operation) {
-        // TODO()
+        dbQuery {
+
+        }
     }
 }
