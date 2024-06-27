@@ -4,6 +4,11 @@ import io.kvision.*
 import io.kvision.core.onClickLaunch
 import io.kvision.html.button
 import io.kvision.panel.root
+import kotlinx.browser.window
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+
+val AppScope = CoroutineScope(window.asCoroutineDispatcher())
 
 class App : Application() {
     val controller = Controller(console)

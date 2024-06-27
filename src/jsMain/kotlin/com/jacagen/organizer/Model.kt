@@ -5,7 +5,7 @@ object Model {
 
     // TODO security
 
-    suspend fun save(op: Operation) {
-        operationService.save(op)
+    suspend fun saveOp(op: Operation) {
+        operationService.saveOp(op)
     }
 }

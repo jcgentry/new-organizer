@@ -3,6 +3,7 @@ package com.jacagen.organizer
 import com.jacagen.organizer.component.OutlineHelper
 import com.jacagen.organizer.component.OutlineNode
 import com.jacagen.organizer.component.TaskComponent
+import kotlinx.coroutines.launch
 import kotlin.js.Console
 
 private class Helper(private val controller: Controller) : OutlineHelper<Task, TaskComponent> {
@@ -30,7 +31,7 @@ class Controller(console: Console) {
 
     init {
         val helper = Helper(this)
-        val rootOp = AddNode(parent = null, newGuid(), "\$ROOT")
+        val rootOp = AddNode(parent = null, node = newGuid(), title = "\$ROOT")
         val newNode = rootOp.apply(tree) { s -> console.log(s) }
         outline = OutlineNode(newNode, helper, isRoot = true)
         emit(rootOp)
@@ -38,27 +39,30 @@ class Controller(console: Console) {
 
     fun titleUpdated(task: Task, newTitle: String) {
         console.log("Title updated")
-        val op = UpdateTitle(task.id, task.title, newTitle)
+        val op = UpdateTitle(node = task.id, oldTitle = task.title, title = newTitle)
         console.log("Applying update title op")
         op.apply(tree) { s -> console.log(s) }
         console.log("Applied update title op")
         emit(op)
     }
 
-    private fun emit(@Suppress("UNUSED_PARAMETER") op: Operation) {
-        /* Nothing for now */
+    private fun emit(op: Operation) {
+        AppScope.launch {
+            Model.saveOp(op)
+
+        }
     }
 
     fun testTree(): Tree<Task> {
-        val op1 = AddNode(tree.root!!.payload.id, newGuid(), title = "Entertain regularly")
+        val op1 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Entertain regularly")
         val n1 = op1.apply(tree) { s -> console.log(s) }
         outline.addChild(n1, 0)
         emit(op1)
-        val op2 = AddNode(tree.root!!.payload.id, newGuid(), title = "Chris's birthday")
+        val op2 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Chris's birthday")
         val n2 = op2.apply(tree) { s -> console.log(s) }
         val cbOutlineNode = outline.addChild(n2, 1)
         emit(op2)
-        val op3 = AddNode(n2.payload.id, newGuid(), title = "Figure out plans for Chris's birthday")
+        val op3 = AddNode(parent = n2.payload.id, node = newGuid(), title = "Figure out plans for Chris's birthday")
         val n3 = op3.apply(tree) { s -> console.log(s) }
         cbOutlineNode.addChild(n3, 0)
         emit(op3)
