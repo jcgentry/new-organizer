@@ -24,6 +24,7 @@ val kvisionVersion: String by System.getProperties()
 val ktorVersion: String by project
 val logbackVersion: String by project
 val exposedVersion: String by project
+val hikariVersion: String by project
 
 val mainClassName = "io.ktor.server.netty.EngineMain"
 
@@ -88,6 +89,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-compression:$ktorVersion")
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
                 implementation("org.jetbrains.exposed:exposed:$exposedVersion")
+                implementation("com.zaxxer:HikariCP:$hikariVersion")
             }
         }
         val jvmTest by getting {
