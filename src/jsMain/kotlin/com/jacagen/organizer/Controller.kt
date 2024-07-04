@@ -66,11 +66,10 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
         emit(op)
     }
 
-
-
-    private fun emit(op: Operation) {
+    private fun emit(vararg ops: Operation) {
         AppScope.launch {
-            Model.saveOp(op)
+            for (op in ops)
+                Model.saveOp(op)
         }
     }
 
@@ -78,15 +77,13 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
         val op1 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Entertain regularly")
         val n1 = op1.applyOp(tree) { s -> console.log(s) }
         outline.addChild(n1, 0, helper)
-        emit(op1)
         val op2 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Chris's birthday")
         val n2 = op2.applyOp(tree) { s -> console.log(s) }
         val cbOutlineNode = outline.addChild(n2, 1, helper)
-        emit(op2)
         val op3 = AddNode(parent = n2.payload.id, node = newGuid(), title = "Figure out plans for Chris's birthday")
         val n3 = op3.applyOp(tree) { s -> console.log(s) }
         cbOutlineNode.addChild(n3, 0, helper)
-        emit(op3)
+        emit(op1, op2, op3)
         return tree
     }
 }
