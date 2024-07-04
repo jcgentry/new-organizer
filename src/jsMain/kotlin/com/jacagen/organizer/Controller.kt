@@ -6,7 +6,7 @@ import com.jacagen.organizer.component.TaskComponent
 import kotlinx.coroutines.launch
 import kotlin.js.Console
 
-private class Helper(private val controller: Controller) : OutlineHelper<Task, TaskComponent> {
+class Helper(private val controller: Controller) : OutlineHelper<Task, TaskComponent> {
     override fun createComponent(payload: Task): TaskComponent {
         val component = TaskComponent(payload)
         component.onTitleUpdateLaunch { s ->
@@ -27,9 +27,10 @@ private class Helper(private val controller: Controller) : OutlineHelper<Task, T
 class Controller(console: Console) {
     val outline: OutlineNode<Task, TaskComponent>
     val tree: Tree<Task> = Tree { s -> console.log(s) }
+    private val helper = Helper(this)
 
     init {
-        val helper = Helper(this)
+
         val rootOp = AddNode(parent = null, node = newGuid(), title = "\$ROOT")
         val newNode = rootOp.apply(tree) { s -> console.log(s) }
         outline = OutlineNode(newNode, helper, isRoot = true)
@@ -53,18 +54,18 @@ class Controller(console: Console) {
         }
     }
 
-    fun testTree(): Tree<Task> {
+    fun testTree(outlineHelper: OutlineHelper<Task, TaskComponent>): Tree<Task> {
         val op1 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Entertain regularly")
         val n1 = op1.apply(tree) { s -> console.log(s) }
-        outline.addChild(n1, 0)
+        outline.addChild(n1, 0, outlineHelper)
         emit(op1)
         val op2 = AddNode(parent = tree.root!!.payload.id, node = newGuid(), title = "Chris's birthday")
         val n2 = op2.apply(tree) { s -> console.log(s) }
-        val cbOutlineNode = outline.addChild(n2, 1)
+        val cbOutlineNode = outline.addChild(n2, 1, outlineHelper)
         emit(op2)
         val op3 = AddNode(parent = n2.payload.id, node = newGuid(), title = "Figure out plans for Chris's birthday")
         val n3 = op3.apply(tree) { s -> console.log(s) }
-        cbOutlineNode.addChild(n3, 0)
+        cbOutlineNode.addChild(n3, 0, outlineHelper)
         emit(op3)
         return tree
     }
