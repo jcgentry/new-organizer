@@ -2,12 +2,16 @@ package com.jacagen.organizer
 
 import com.jacagen.organizer.component.spacer
 import io.kvision.*
-import io.kvision.core.Component
-import io.kvision.core.onClickLaunch
+import io.kvision.core.*
+import io.kvision.dropdown.dropDown
 import io.kvision.html.button
+import io.kvision.html.div
+import io.kvision.i18n.I18n.tr
 import io.kvision.panel.HPanel
 import io.kvision.panel.Root
 import io.kvision.panel.root
+import io.kvision.panel.stackPanel
+import io.kvision.utils.px
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -21,7 +25,25 @@ class App : Application() {
         AppScope.launch {
             val controller = Controller.new(console)
             root("kvapp") {
-                outlineView(controller)
+                dropDown(
+                    tr("Activate panel from the stack"), listOf(
+                        tr("Outline view") to "#/outlineView",
+                        tr("Box view") to "#/boxView"
+                    )
+                )
+
+                stackPanel {
+                    route("/outlineView") {
+
+                        outlineView(controller)
+                    }
+                    route("/boxView") {
+                        div("&nbsp;", rich = true) {
+                            background = Background(Color.name(Col.GREEN))
+                            height = 40.px
+                        }
+                    }
+                }
             }
         }
     }

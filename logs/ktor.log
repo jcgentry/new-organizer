@@ -628,3 +628,7 @@ java.lang.NullPointerException: null
 [2024-07-04 13:11:53,613]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
 [2024-07-04 13:11:53,776]-[main] INFO  Application - Application started in 0.518 seconds.
 [2024-07-04 13:11:53,865]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-04 14:27:55,635]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2024-07-04 14:27:55,696]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2024-07-04 14:27:55,835]-[main] INFO  Application - Application started in 0.487 seconds.
+[2024-07-04 14:27:55,912]-[main] INFO  Application - Responding at http://0.0.0.0:8080
