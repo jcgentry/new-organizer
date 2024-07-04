@@ -1,13 +1,21 @@
 package com.jacagen.organizer
 
 import com.jacagen.organizer.Db.dbQuery
+import io.ktor.util.logging.*
+import kotlinx.serialization.builtins.ListSerializer
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
+import org.slf4j.LoggerFactory
+
+
 
 actual class OperationService : IOperationService {
+    val logger = LoggerFactory.getLogger(OperationService::class.java)
+
     override suspend fun saveOp(op: Operation) {
+        logger.debug("Saving operation {}", op)
         val key = dbQuery {
             (OperationDao.insert {
                 it[opType] = op.opType

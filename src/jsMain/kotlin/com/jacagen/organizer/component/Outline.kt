@@ -1,6 +1,7 @@
 package com.jacagen.organizer.component
 
 import com.jacagen.organizer.Node
+import com.jacagen.organizer.Tree
 import io.kvision.core.Component
 import io.kvision.core.onEvent
 import io.kvision.panel.HPanel

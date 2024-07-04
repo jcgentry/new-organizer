@@ -8,11 +8,8 @@ sealed interface Operation {
 
     // TODO Go through an enum?
     val opType: String
-}
 
-sealed interface OperationImpl<R> : Operation {
-    fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): R
-
+    fun applyOp(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task>
 }
 
 @Serializable
@@ -22,9 +19,9 @@ data class AddNode(
     val node: Guid,
     val title: String,
     val index: Int? = null,
-) : OperationImpl<Node<Task>> {
+) : Operation {
     override val opType = "AddNode"
-    override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
+    override fun applyOp(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         if (parent == null) {
             tree.root = Node(Task(node, title), parent = null, tree = tree)
             return tree.root!!
@@ -47,10 +44,10 @@ data class UpdateTitle(
     val node: Guid,
     val oldTitle: String,
     val title: String
-) : OperationImpl<Node<Task>> {
+) : Operation {
     override val opType = "UpdateTitle"
 
-    override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
+    override fun applyOp(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         val node = tree.getNode { n ->
             n.id == node
         }
