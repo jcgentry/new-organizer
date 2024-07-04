@@ -7,10 +7,8 @@ import io.kvision.dropdown.dropDown
 import io.kvision.html.button
 import io.kvision.html.div
 import io.kvision.i18n.I18n.tr
-import io.kvision.panel.HPanel
-import io.kvision.panel.Root
-import io.kvision.panel.root
-import io.kvision.panel.stackPanel
+import io.kvision.panel.*
+import io.kvision.routing.Routing
 import io.kvision.utils.px
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
@@ -20,35 +18,47 @@ import kotlinx.coroutines.launch
 val AppScope = CoroutineScope(window.asCoroutineDispatcher())
 
 class App : Application() {
+    init {
+        Routing.init()
+    }
 
     override fun start() {
         AppScope.launch {
             val controller = Controller.new(console)
             root("kvapp") {
-                dropDown(
-                    tr("Activate panel from the stack"), listOf(
-                        tr("Outline view") to "#/outlineView",
-                        tr("Box view") to "#/boxView"
-                    )
-                )
-
-                stackPanel {
-                    route("/outlineView") {
-
-                        outlineView(controller)
-                    }
-                    route("/boxView") {
-                        div("&nbsp;", rich = true) {
-                            background = Background(Color.name(Col.GREEN))
-                            height = 40.px
-                        }
-                    }
+                this.marginTop = 10.px
+                vPanel(spacing = 5) {
+                    addStackPanel(controller)
                 }
             }
         }
     }
 
-    private fun Root.outlineView(controller: Controller) {
+    private fun Container.addStackPanel(controller: Controller) {
+        dropDown(
+            tr("View"), listOf(
+                tr("Outline") to "#/view/outline",
+                tr("Boxes") to "#/view/boxes"
+            )
+        )
+        stackPanel(activateLast = false) {
+            route("/view/outline") {
+                div {
+                    outlineView(controller)
+                }
+            }
+            route("/view/boxes") {
+                div {
+                    id = "green"
+                    background = Background(Color.name(Col.GREEN))
+                    height = 40.px
+                }
+            }
+        }
+
+    }
+
+    private fun SimplePanel.outlineView(controller: Controller) {
         try {
             add(controller.outline)
         } catch (e: Exception) {

@@ -88,6 +88,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-netty:$ktorVersion")
                 implementation("io.ktor:ktor-server-auth:$ktorVersion")
                 implementation("io.ktor:ktor-server-compression:$ktorVersion")
+
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
                 implementation("org.jetbrains.exposed:exposed:$exposedVersion")
                 implementation("com.zaxxer:HikariCP:$hikariVersion")
@@ -108,6 +109,8 @@ kotlin {
                 implementation("io.kvision:kvision-fontawesome:$kvisionVersion")
                 implementation("io.kvision:kvision-state:$kvisionVersion")
                 implementation("io.kvision:kvision-tom-select-remote:$kvisionVersion")
+                implementation("io.kvision:kvision-routing-navigo:$kvisionVersion")
+
                 implementation("app.softwork:kotlinx-uuid-core-js:0.0.25")
             }
         }
