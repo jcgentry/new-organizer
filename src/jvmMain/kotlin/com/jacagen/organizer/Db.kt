@@ -22,7 +22,7 @@ object Db {
     private fun hikari(config: ApplicationConfig): HikariDataSource {
         val hikariConfig = HikariConfig()
         hikariConfig.driverClassName = config.propertyOrNull("db.driver")?.getString() ?: "org.h2.Driver"
-        hikariConfig.jdbcUrl = config.propertyOrNull("db.jdbcUrl")?.getString() ?: "jdbc:h2:mem:test"
+        hikariConfig.jdbcUrl = config.propertyOrNull("db.jdbcUrl")?.getString() ?: "jdbc:h2:file:////tmp/to_do_ktor"
         hikariConfig.username = config.propertyOrNull("db.username")?.getString()
         hikariConfig.password = config.propertyOrNull("db.password")?.getString()
         hikariConfig.maximumPoolSize = 3

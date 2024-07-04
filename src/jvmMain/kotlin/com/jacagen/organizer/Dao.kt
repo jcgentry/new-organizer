@@ -7,9 +7,8 @@ object OperationDao : Table("operations") {
     val opType = varchar("op_type", 255)
 
     // TODO Union of all fields--yuck
-    val parent = varchar("parent", 255).nullable()  // TODO what is real size of Guid?
-    val newNode = varchar("new_node", 255).nullable()  // TODO what is real size of Guid?
-    val title = varchar("parent", 255).nullable()  // TODO This needs to be bigger
+    val parent = varchar("parent", 255).nullable()  // What is real size of Guid?
+    val title = varchar("title", 255).nullable()  // This needs to be bigger
     val index = integer("index").nullable()
     val node = varchar("node", 255).nullable()
     val oldTitle = varchar("old_title", 255).nullable()

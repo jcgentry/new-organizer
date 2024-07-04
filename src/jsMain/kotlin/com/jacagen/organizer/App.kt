@@ -7,6 +7,7 @@ import io.kvision.panel.root
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
 
 val AppScope = CoroutineScope(window.asCoroutineDispatcher())
 
@@ -24,8 +25,16 @@ class App : Application() {
                 console.log(controller.tree.toString())
             }
             button("Add test tree").onClickLaunch { controller.testTree() }
+            button("Show DB").onClickLaunch {
+                extractOps()
+            }
         }
     }
+
+    private suspend fun extractOps() =
+        AppScope.launch {
+            controller.allOps().forEach { console.log(it) }
+        }
 }
 
 fun main() {

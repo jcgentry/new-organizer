@@ -19,10 +19,9 @@ private class Helper(private val controller: Controller) : OutlineHelper<Task, T
         console.log("Adding new node to $parent at position $position")
         val newPayload = Task(newGuid(), "")
         val newNode = Node(newPayload, parent, tree = parent.tree)
-        parent.children.add(if (position == null) parent.children.size else position, newNode)
+        parent.children.add(position ?: parent.children.size, newNode)
         return newNode
     }
-
 }
 
 class Controller(console: Console) {
@@ -46,10 +45,11 @@ class Controller(console: Console) {
         emit(op)
     }
 
+    suspend fun allOps(): List<Operation> = Model.allOps()
+
     private fun emit(op: Operation) {
         AppScope.launch {
             Model.saveOp(op)
-
         }
     }
 

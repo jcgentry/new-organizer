@@ -8,4 +8,7 @@ object Model {
     suspend fun saveOp(op: Operation) {
         operationService.saveOp(op)
     }
+
+    suspend fun allOps() =
+        operationService.allOps()
 }

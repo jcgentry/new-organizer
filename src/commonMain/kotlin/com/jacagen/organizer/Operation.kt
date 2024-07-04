@@ -7,7 +7,7 @@ sealed interface Operation {
     val id: Int?
 
     // TODO Go through an enum?
-    val type: String
+    val opType: String
 }
 
 sealed interface OperationImpl<R> : Operation {
@@ -23,7 +23,7 @@ data class AddNode(
     val title: String,
     val index: Int? = null,
 ) : OperationImpl<Node<Task>> {
-    override val type = "AddNode"
+    override val opType = "AddNode"
     override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         if (parent == null) {
             tree.root = Node(Task(node, title), parent = null, tree = tree)
@@ -48,7 +48,7 @@ data class UpdateTitle(
     val oldTitle: String,
     val title: String
 ) : OperationImpl<Node<Task>> {
-    override val type = "UpdateTitle"
+    override val opType = "UpdateTitle"
 
     override fun apply(tree: Tree<Task>, logger: ((String) -> Unit)): Node<Task> {
         val node = tree.getNode { n ->

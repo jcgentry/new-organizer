@@ -90,6 +90,8 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:$logbackVersion")
                 implementation("org.jetbrains.exposed:exposed:$exposedVersion")
                 implementation("com.zaxxer:HikariCP:$hikariVersion")
+
+                runtimeOnly("org.postgresql:postgresql:42.7.3")    // TODO version?
             }
         }
         val jvmTest by getting {
