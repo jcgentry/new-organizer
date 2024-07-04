@@ -1,14 +1,11 @@
 package com.jacagen.organizer
 
 import com.jacagen.organizer.Db.dbQuery
-import io.ktor.util.logging.*
-import kotlinx.serialization.builtins.ListSerializer
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.selectAll
 import org.slf4j.LoggerFactory
-
 
 
 actual class OperationService : IOperationService {

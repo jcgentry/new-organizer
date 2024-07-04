@@ -1,7 +1,6 @@
 package com.jacagen.organizer.component
 
 import com.jacagen.organizer.Node
-import com.jacagen.organizer.Tree
 import io.kvision.core.Component
 import io.kvision.core.onEvent
 import io.kvision.panel.HPanel
@@ -40,12 +39,13 @@ class OutlineNode<T, C : Component>(
         return childList
     }
 
-    fun parentOutlineNode(): OutlineNode<T, C> {
+    private fun parentOutlineNode(): OutlineNode<T, C> {
         val containingChildList = parent as VPanel
         val containingIndentedChildList = containingChildList.parent as HPanel
         return containingIndentedChildList.parent as OutlineNode<T, C>
     }
 
+    @Suppress("unused")
     fun containingChildList(): VPanel = parent as VPanel
 
     fun addChild(node: Node<T>, index: Int, outlineHelper: OutlineHelper<T, C>): OutlineNode<T, C> {
