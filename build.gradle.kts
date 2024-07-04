@@ -25,6 +25,7 @@ val ktorVersion: String by project
 val logbackVersion: String by project
 val exposedVersion: String by project
 val hikariVersion: String by project
+val postgresVersion: String by project
 
 val mainClassName = "io.ktor.server.netty.EngineMain"
 
@@ -91,7 +92,7 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed:$exposedVersion")
                 implementation("com.zaxxer:HikariCP:$hikariVersion")
 
-                runtimeOnly("org.postgresql:postgresql:42.7.3")    // TODO version?
+                runtimeOnly("org.postgresql:postgresql:$postgresVersion")
             }
         }
         val jvmTest by getting {
