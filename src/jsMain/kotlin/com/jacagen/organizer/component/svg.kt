@@ -1,11 +1,7 @@
 package com.jacagen.organizer.component
 
-import io.kvision.core.onEvent
 import io.kvision.html.CustomTag
 import io.kvision.html.Div
-import io.kvision.html.customTag
-import org.w3c.dom.DOMMatrix
-import org.w3c.dom.svg.SVGGraphicsElement
 
 typealias Color = String
 
@@ -19,14 +15,13 @@ data class ViewBox(
 }
 
 class Svg(width: Int? = null, height: Int? = null, viewBox: ViewBox? = null, block: Svg.() -> Unit = {}) :
-        CustomTag(elementName = "svg") {
+    CustomTag(elementName = "svg") {
     init {
         if (width != null) setAttribute("width", "$width")
         if (height != null) setAttribute("height", "$height")
         if (viewBox != null) setAttribute("viewBox", "$viewBox")
         block()
     }
-
 
 
 }
