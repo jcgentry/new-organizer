@@ -1,5 +1,6 @@
 package com.jacagen.organizer
 
+import com.jacagen.organizer.component.TaskBoard
 import com.jacagen.organizer.component.spacer
 import io.kvision.*
 import io.kvision.core.*
@@ -49,9 +50,7 @@ class App : Application() {
             }
             route("/view/boxes") {
                 div {
-                    id = "green"
-                    background = Background(Color.name(Col.GREEN))
-                    height = 40.px
+                    add(TaskBoard())
                 }
             }
         }

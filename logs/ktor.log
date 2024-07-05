@@ -632,3 +632,10 @@ java.lang.NullPointerException: null
 [2024-07-04 14:27:55,696]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
 [2024-07-04 14:27:55,835]-[main] INFO  Application - Application started in 0.487 seconds.
 [2024-07-04 14:27:55,912]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-04 19:02:41,576]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2024-07-04 19:02:41,644]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2024-07-04 19:02:41,789]-[main] INFO  Application - Application started in 0.516 seconds.
+[2024-07-04 19:02:41,875]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-04 20:08:18,908]-[HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=9m36s724ms).
+[2024-07-04 20:24:20,622]-[HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=6m31s639ms).
+[2024-07-04 20:57:44,065]-[HikariPool-1 housekeeper] WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=33m23s443ms).
