@@ -1,14 +1,14 @@
 package com.jacagen.organizer
 
-import com.jacagen.organizer.component.TaskBoard
-import com.jacagen.organizer.component.spacer
+import com.jacagen.organizer.view.createOutlineView
+import com.jacagen.organizer.view.createTaskBoardView
 import io.kvision.*
-import io.kvision.core.*
+import io.kvision.core.Container
 import io.kvision.dropdown.dropDown
-import io.kvision.html.button
-import io.kvision.html.div
 import io.kvision.i18n.I18n.tr
-import io.kvision.panel.*
+import io.kvision.panel.root
+import io.kvision.panel.stackPanel
+import io.kvision.panel.vPanel
 import io.kvision.routing.Routing
 import io.kvision.utils.px
 import kotlinx.browser.window
@@ -44,47 +44,14 @@ class App : Application() {
         )
         stackPanel(activateLast = false) {
             route("/view/outline") {
-                div {
-                    outlineView(controller)
-                }
+                createOutlineView(controller)
             }
             route("/view/boxes") {
-                div {
-                    add(TaskBoard())
-                }
+                createTaskBoardView(controller)
             }
         }
 
     }
-
-    private fun SimplePanel.outlineView(controller: Controller) {
-        try {
-            add(controller.outline)
-        } catch (e: Exception) {
-            console.log(e.message ?: "Something went wrong")
-        }
-        add(buttons(controller))
-    }
-
-    private fun buttons(controller: Controller): Component {
-        return HPanel {
-            button("Show outline").onClickLaunch {
-                console.log(controller.tree.toString())
-            }
-            spacer(.1f)
-            button("Add test tree").onClickLaunch { controller.testTree() }
-            spacer(.1f)
-            button("Show DB").onClickLaunch {
-                extractOps()
-            }
-        }
-    }
-
-
-    private suspend fun extractOps() =
-        AppScope.launch {
-            Controller.allOps().forEach { console.log(it) }
-        }
 }
 
 fun main() {
