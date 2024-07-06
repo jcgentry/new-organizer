@@ -32,7 +32,8 @@ fun Div.svg(width: Int? = null, height: Int? = null, viewBox: ViewBox? = null, b
     return svg
 }
 
-class Rect(className: String? = null, x: Int, y: Int, width: Int, height: Int, fill: Color) : CustomTag("rect") {
+@Suppress("LeakingThis")
+open class Rect(className: String? = null, x: Int, y: Int, width: Int, height: Int, fill: Color) : CustomTag("rect") {
     init {
         if (className != null) addCssClass(className)
         setAttribute("x", "$x")
