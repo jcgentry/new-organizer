@@ -61,5 +61,7 @@ class TaskBoard : Div() {
     private fun endDrag(e: Event) {
         selectedElement = null
     }
+
+    fun addCard(card: TaskCard) = getSvg().add(card)
 }
 
