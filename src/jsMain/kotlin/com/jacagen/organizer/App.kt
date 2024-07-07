@@ -44,47 +44,14 @@ class App : Application() {
         )
         stackPanel(activateLast = false) {
             route("/view/outline") {
-                div {
-                    outlineView(controller)
-                }
+                outlineView(controller)
             }
             route("/view/boxes") {
-                div {
-                    add(TaskBoard())
-                }
+                taskBoardView()
             }
         }
 
     }
-
-    private fun SimplePanel.outlineView(controller: Controller) {
-        try {
-            add(controller.outline)
-        } catch (e: Exception) {
-            console.log(e.message ?: "Something went wrong")
-        }
-        add(buttons(controller))
-    }
-
-    private fun buttons(controller: Controller): Component {
-        return HPanel {
-            button("Show outline").onClickLaunch {
-                console.log(controller.tree.toString())
-            }
-            spacer(.1f)
-            button("Add test tree").onClickLaunch { controller.testTree() }
-            spacer(.1f)
-            button("Show DB").onClickLaunch {
-                extractOps()
-            }
-        }
-    }
-
-
-    private suspend fun extractOps() =
-        AppScope.launch {
-            Controller.allOps().forEach { console.log(it) }
-        }
 }
 
 fun main() {
@@ -98,3 +65,39 @@ fun main() {
         TomSelectModule,
     )
 }
+
+private fun Container.taskBoardView() {
+    div {
+        add(TaskBoard())
+    }
+}
+
+private fun Container.outlineView(controller: Controller) {
+    div {
+        try {
+            add(controller.outline)
+        } catch (e: Exception) {
+            console.log(e.message ?: "Something went wrong")
+        }
+        add(buttons(controller))
+    }
+}
+
+private fun buttons(controller: Controller): Component {
+    return HPanel {
+        button("Show outline").onClickLaunch {
+            console.log(controller.tree.toString())
+        }
+        spacer(.1f)
+        button("Add test tree").onClickLaunch { controller.testTree() }
+        spacer(.1f)
+        button("Show DB").onClickLaunch {
+            extractOps()
+        }
+    }
+}
+
+private suspend fun extractOps() =
+    AppScope.launch {
+        Controller.allOps().forEach { console.log(it) }
+    }

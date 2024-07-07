@@ -1,12 +1,8 @@
-[2024-07-06 10:18:30,885]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-[2024-07-06 10:18:30,980]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-[2024-07-06 10:18:31,146]-[main] INFO  Application - Application started in 0.575 seconds.
-[2024-07-06 10:18:31,237]-[main] INFO  Application - Responding at http://0.0.0.0:8080
-[2024-07-06 10:19:47,100]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-[2024-07-06 10:19:47,177]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-[2024-07-06 10:19:47,338]-[main] INFO  Application - Application started in 0.525 seconds.
-[2024-07-06 10:19:47,422]-[main] INFO  Application - Responding at http://0.0.0.0:8080
-[2024-07-06 10:21:32,134]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-[2024-07-06 10:21:32,210]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-[2024-07-06 10:21:32,371]-[main] INFO  Application - Application started in 0.526 seconds.
-[2024-07-06 10:21:32,453]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-07 09:51:56,221]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2024-07-07 09:51:56,310]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2024-07-07 09:51:56,463]-[main] INFO  Application - Application started in 0.523 seconds.
+[2024-07-07 09:51:56,540]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-07 10:00:42,504]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2024-07-07 10:00:42,567]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2024-07-07 10:00:42,712]-[main] INFO  Application - Application started in 0.465 seconds.
+[2024-07-07 10:00:42,780]-[main] INFO  Application - Responding at http://0.0.0.0:8080
