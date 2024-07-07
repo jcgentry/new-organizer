@@ -6,3 +6,7 @@
 [2024-07-07 10:00:42,567]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
 [2024-07-07 10:00:42,712]-[main] INFO  Application - Application started in 0.465 seconds.
 [2024-07-07 10:00:42,780]-[main] INFO  Application - Responding at http://0.0.0.0:8080
+[2024-07-07 12:11:30,629]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+[2024-07-07 12:11:30,701]-[main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+[2024-07-07 12:11:30,859]-[main] INFO  Application - Application started in 0.475 seconds.
+[2024-07-07 12:11:30,929]-[main] INFO  Application - Responding at http://0.0.0.0:8080

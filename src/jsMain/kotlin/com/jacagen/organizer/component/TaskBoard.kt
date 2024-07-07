@@ -22,9 +22,6 @@ class TaskBoard : Div() {
             mousedown = { e -> startDrag(e) }
             mousemove = { e -> drag(e) }
             mouseup = { e -> endDrag(e) }
-            mouseleave = { e ->
-                console.log("Mouse leave $e")
-            }
         }
     }
 
@@ -34,22 +31,18 @@ class TaskBoard : Div() {
     private fun startDrag(e: Event) {
         val element = e.target as Element
         if (element.classList.contains("draggable") && e is MouseEvent) {
-            console.log("Draggable at ${element.getAttributeNS(null, "x")}")
             selectedElement = element
             val (posX, posY) = getMousePosition(e)
             offset = Pair(
                 posX - selectedElement!!.getAttributeNS(null, "x")!!.toDouble(),
                 posY - selectedElement!!.getAttributeNS(null, "y")!!.toDouble(),
             )
-        } else
-            console.log("Not Draggable ${element.classList}")
+        }
     }
 
     private fun drag(e: Event) {
         if (e is MouseEvent && selectedElement != null) {
             e.preventDefault()
-            val ctm = (e.target as SVGGraphicsElement).getScreenCTM()!!
-            console.log("${ctm.a}, ${ctm.b}, ${ctm.e}, ${ctm.f}")
             val (x, y) = getMousePosition(e)
             val (ox, oy) = offset!!
             selectedElement!!.setAttributeNS(null, "x", (x - ox).toString())
@@ -59,7 +52,6 @@ class TaskBoard : Div() {
 
     private fun getMousePosition(event: MouseEvent): Pair<Double, Double> {
         val ctm = (event.target as SVGGraphicsElement).getScreenCTM()!!
-        console.log("${ctm.a}, ${ctm.b}, ${ctm.e}, ${ctm.f}")
         val x = (event.clientX - ctm.e) / ctm.a
         val y = (event.clientY - ctm.f) / ctm.d
         return Pair(x, y)
