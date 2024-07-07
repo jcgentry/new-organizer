@@ -1,6 +1,5 @@
 package com.jacagen.organizer.component
 
-import com.jacagen.organizer.view.taskCards
 import io.kvision.core.onEvent
 import io.kvision.html.Div
 import io.kvision.require

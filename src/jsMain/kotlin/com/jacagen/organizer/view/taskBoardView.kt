@@ -8,12 +8,8 @@ fun Container.taskBoardView() {
     div {
         val taskBoard = TaskBoard()
         add(taskBoard)
-        taskBoard.getSvg().taskCards()
+        taskBoard.taskCard(className = "draggable", x = 4, y = 5, width = 8, height = 10, fill = "#007bff")
+        taskBoard.taskCard(className = "static", x = 18, y = 5, width = 8, height = 10, fill = "#888")
     }
-}
-
-fun Svg.taskCards() {
-    taskCard(className = "draggable", x = 4, y = 5, width = 8, height = 10, fill = "#007bff")
-    taskCard(className = "static", x = 18, y = 5, width = 8, height = 10, fill = "#888")
 }
 
