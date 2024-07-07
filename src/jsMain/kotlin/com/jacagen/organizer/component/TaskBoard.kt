@@ -1,5 +1,6 @@
 package com.jacagen.organizer.component
 
+import com.jacagen.organizer.view.taskCards
 import io.kvision.core.onEvent
 import io.kvision.html.Div
 import io.kvision.require
@@ -16,8 +17,6 @@ class TaskBoard : Div() {
         require("css/taskboard.css")
         val svg = svg(viewBox = ViewBox(0, 0, 30, 20)) {
             rect(x = 0, y = 0, width = 30, height = 20, fill = "#fafafa")
-            rect(className = "draggable", x = 4, y = 5, width = 8, height = 10, fill = "#007bff")
-            rect(className = "static", x = 18, y = 5, width = 8, height = 10, fill = "#888")
         }
         svg.onEvent {
             mousedown = { e -> startDrag(e) }
@@ -28,6 +27,9 @@ class TaskBoard : Div() {
             }
         }
     }
+
+    fun getSvg() = getChildren()[0] as Svg
+
 
     private fun startDrag(e: Event) {
         val element = e.target as Element
@@ -69,3 +71,4 @@ class TaskBoard : Div() {
         selectedElement = null
     }
 }
+

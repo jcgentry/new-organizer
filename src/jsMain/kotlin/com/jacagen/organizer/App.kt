@@ -1,12 +1,10 @@
 package com.jacagen.organizer
 
-import com.jacagen.organizer.component.TaskBoard
-import com.jacagen.organizer.component.spacer
+import com.jacagen.organizer.view.outlineView
+import com.jacagen.organizer.view.taskBoardView
 import io.kvision.*
 import io.kvision.core.*
 import io.kvision.dropdown.dropDown
-import io.kvision.html.button
-import io.kvision.html.div
 import io.kvision.i18n.I18n.tr
 import io.kvision.panel.*
 import io.kvision.routing.Routing
@@ -66,38 +64,3 @@ fun main() {
     )
 }
 
-private fun Container.taskBoardView() {
-    div {
-        add(TaskBoard())
-    }
-}
-
-private fun Container.outlineView(controller: Controller) {
-    div {
-        try {
-            add(controller.outline)
-        } catch (e: Exception) {
-            console.log(e.message ?: "Something went wrong")
-        }
-        add(buttons(controller))
-    }
-}
-
-private fun buttons(controller: Controller): Component {
-    return HPanel {
-        button("Show outline").onClickLaunch {
-            console.log(controller.tree.toString())
-        }
-        spacer(.1f)
-        button("Add test tree").onClickLaunch { controller.testTree() }
-        spacer(.1f)
-        button("Show DB").onClickLaunch {
-            extractOps()
-        }
-    }
-}
-
-private suspend fun extractOps() =
-    AppScope.launch {
-        Controller.allOps().forEach { console.log(it) }
-    }
