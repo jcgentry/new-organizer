@@ -1,43 +1,40 @@
 package com.jacagen.organizer.component
 
-import io.kvision.core.onEvent
+import io.kvision.core.Component
 import io.kvision.html.Div
-import io.kvision.html.div
-import io.kvision.panel.HPanel
 import io.kvision.panel.VPanel
 import io.kvision.panel.hPanel
 import io.kvision.panel.vPanel
 import io.kvision.require
-import org.w3c.dom.Element
 import org.w3c.dom.events.Event
 import org.w3c.dom.events.MouseEvent
-import org.w3c.dom.svg.SVGGraphicsElement
 import kotlin.math.abs
 
 class TaskBoard : Div() {
-    private var selectedElement: Element? = null
+    private var selectedElement: TaskCard? = null
     private var offset: Pair<Double, Double>? = null
     private val connections: MutableMap<Pair<TaskCard, TaskCard>, Line> = mutableMapOf()
+
+    var svg: Svg? = null
+
+    private var mouseXReporter = Div("Mouse x:")
+    private val mouseYReporter = Div("Mouse y:")
+    private val clientXReporter = Div("Client x:")
+    private val clientYReporter = Div("Client y:")
 
     init {
         require("css/taskboard.css")
         vPanel {
-            val svg = svg(viewBox = ViewBox(0, 0, 30, 20)) {
+            svg = svg(viewBox = ViewBox(0, 0, 30, 20)) {
                 rect(id = "zero", x = 0, y = 0, width = 30, height = 20, fill = "#fafafa")
             }
-            svg.onEvent {
-                /* See https://www.petercollingridge.co.uk/tutorials/svg/interactive/dragging/ */
-                mousedown = { e -> startDrag(e) }
-                mousemove = { e -> drag(e) }
-                mouseup = { e -> endDrag(e) }
+            hPanel {
+                add(mouseXReporter)
+                add(mouseYReporter)
             }
             hPanel {
-                div("Mouse x:")
-                div("Mouse y:")
-            }
-            hPanel {
-                div("Client x:")
-                div("Client y:")
+                add(clientXReporter)
+                add(clientYReporter)
             }
         }
     }
@@ -51,58 +48,65 @@ class TaskBoard : Div() {
     }
 
 
-    private fun startDrag(e: Event) {
-        val element = e.target as Element
-        if (element.classList.contains("draggable") && e is MouseEvent) {
-            selectedElement = element
-            val (posX, posY) = getMousePosition(e)
+    fun startDrag(component: Component, e: Event) {
+        if (component.getElement()!!.classList.contains("draggable") && e is MouseEvent) {
+            selectedElement = component as TaskCard
+            val (posX, posY) = getMousePosition(component, e)
             offset = Pair(
-                posX - selectedElement!!.getAttributeNS(null, "x")!!.toDouble(),
-                posY - selectedElement!!.getAttributeNS(null, "y")!!.toDouble(),
-            )
+                posX - selectedElement!!.getAttribute("x")!!.toDouble(),
+                posY - selectedElement!!.getAttribute("y")!!.toDouble(),)
+        } else {
+            console.log("Not draggable")
         }
     }
 
-    private fun drag(e: Event) {
+    fun drag(e: Event) {
         if (e is MouseEvent && selectedElement != null) {
             e.preventDefault()
-            val (x, y) = getMousePosition(e)
+            val (x, y) = getMousePosition(selectedElement!!, e)
             val (ox, oy) = offset!!
-            val posX = (x - ox).toString()
-            val posY = (y - oy).toString()
-            selectedElement!!.setAttribute("x", posX)
-            selectedElement!!.setAttribute("y", posY)
+            val posX = (x - ox)
+            val posY = (y - oy)
+            selectedElement!!.setAttribute("x", posX.toString())
+            selectedElement!!.setAttribute("y", posY.toString())
             console.log("Changed card to $posX, $posY")
             for ((cards, line) in connections.entries) {
-                val first = cards.first.id
-                val second = cards.second.id
-                if (first == selectedElement!!.id || second == selectedElement!!.id) {
+                if (cards.first == selectedElement || cards.second == selectedElement) {
                     console.log("Found element")
                     console.log("Selected element is ${cards.first.getElement()}")
-                    console.log("Does ==?  ${cards.first.getElement() == selectedElement}")
                     updateConnection(cards.first, cards.second, line)
                 }
             }
         }
     }
 
-    private fun getMousePosition(event: MouseEvent): Pair<Double, Double> {
-        val ctm = (event.target as SVGGraphicsElement).getScreenCTM()!!
-        ((((getChildren()[0] as VPanel).getChildren()[1] as HPanel)).getChildren()[0] as Div).content = "Client x: ${event.clientX}"
-        ((((getChildren()[0] as VPanel).getChildren()[2] as HPanel)).getChildren()[0] as Div).content = "Client y: ${event.clientY}"
-        val x = (event.clientX - ctm.e) / ctm.a
-        val y = (event.clientY - ctm.f) / ctm.d
-        ((((getChildren()[0] as VPanel).getChildren()[1] as HPanel)).getChildren()[1] as Div).content = "Mouse x: $x"
-        ((((getChildren()[0] as VPanel).getChildren()[2] as HPanel)).getChildren()[1] as Div).content = "Mouse y: $y"
+    private fun getMousePosition(component: TaskCard, event: MouseEvent): Pair<Double, Double> {
+        console.log("Mouse position of component $component, with element ${component.getElement()}")
+        val ctm = component.getScreenCTM()!!
+        val e = ctm.e as Int
+        val f = ctm.f as Int
+        val a = ctm.a as Int
+        val d = ctm.d as Int
+        clientXReporter.content =
+            "Client x: ${event.clientX}"
+        clientYReporter.content =
+            "Client y: ${event.clientY}"
+        val x = (event.clientX - e).toDouble() / a.toDouble()
+        val y = (event.clientY - f).toDouble() / d.toDouble()
+        mouseXReporter.content = "Mouse x: $x"
+        mouseYReporter.content = "Mouse y: $y"
         return Pair(x, y)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun endDrag(e: Event) {
+    fun endDrag(e: Event) {
         selectedElement = null
     }
 
-    fun addCard(card: TaskCard) = getSvg().add(card)
+    fun addCard(card: TaskCard) {
+        getSvg().add(card)
+
+    }
 
     fun addConnection(from: TaskCard, to: TaskCard) {
         val line = Line(0, 0, 100, 100, mapOf("stroke" to "red", "stroke-width" to "0.1"))
@@ -131,18 +135,18 @@ class TaskBoard : Div() {
         console.log("Sizes are $w1 x $h1, $w2, $h2")
 
         /* Center coordinates */
-        val cx1 = x1 + w1;
-        val cy1 = y1 + h1;
-        val cx2 = x2 + w2;
-        val cy2 = y2 + h2;
+        val cx1 = x1 + w1
+        val cy1 = y1 + h1
+        val cx2 = x2 + w2
+        val cy2 = y2 + h2
         console.log("Center coordinates are are $cx1, $cy1 -> $cx2, $cy2")
 
         /* Distance between centers */
-        val dx = cx2 - cx1;
-        val dy = cy2 - cy1;
+        val dx = cx2 - cx1
+        val dy = cy2 - cy1
 
-        val p1 = getIntersection(dx, dy, cx1, cy1, w1, h1);
-        val p2 = getIntersection(-dx, -dy, cx2, cy2, w2, h2);
+        val p1 = getIntersection(dx, dy, cx1, cy1, w1, h1)
+        val p2 = getIntersection(-dx, -dy, cx2, cy2, w2, h2)
 
         cxn.setAttribute("x1", p1.first.toString())
         cxn.setAttribute("y1", p1.second.toString())
