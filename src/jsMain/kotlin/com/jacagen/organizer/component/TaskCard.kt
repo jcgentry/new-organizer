@@ -1,8 +1,9 @@
 package com.jacagen.organizer.component
 
-fun TaskBoard.taskCard(className: String, x: Int, y: Int, width: Int, height: Int, fill: Color) {
-    val card = TaskCard(className, x, y, width, height, fill)
+fun TaskBoard.taskCard(id: String, className: String, x: Int, y: Int, width: Int, height: Int, fill: Color): TaskCard {
+    val card = TaskCard(id, className, x, y, width, height, fill)
     addCard(card)
+    return card
 }
 
-class TaskCard(className: String, x: Int, y: Int, width: Int, height: Int, fill: Color) : Rect(className, x, y, width, height, fill) {}
+class TaskCard(id: String, className: String, x: Int, y: Int, width: Int, height: Int, fill: Color) : Rect(id, className, x, y, width, height, fill) {}
