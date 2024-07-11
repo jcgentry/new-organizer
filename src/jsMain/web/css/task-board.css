@@ -1,6 +1,15 @@
 .static {
     cursor: not-allowed;
 }
+
 .draggable {
     cursor: move;
+}
+
+.taskCardTitle {
+    font: 1px sans-serif;
+}
+
+.taskCard {
+
 }

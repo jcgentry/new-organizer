@@ -1,9 +1,7 @@
 package com.jacagen.organizer.component
 
 import io.kvision.html.CustomTag
-import io.kvision.html.Div
 import io.kvision.panel.VPanel
-import org.w3c.dom.svg.SVGGraphicsElement
 
 typealias Color = String
 
@@ -32,24 +30,42 @@ fun VPanel.svg(width: Int? = null, height: Int? = null, viewBox: ViewBox? = null
     return svg
 }
 
-open class Rect(id: String, className: String? = null, x: Int, y: Int, width: Int, height: Int, fill: Color) : CustomTag("rect") {
+open class Rect(
+    className: String? = null,
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    fill: Color,
+    init: (CustomTag.() -> Unit)? = null
+) : CustomTag("rect", init = init) {
     init {
-        this.id = id
         if (className != null) addCssClass(className)
         setAttribute("x", "$x")
         setAttribute("y", "$y")
         setAttribute("width", "$width")
         setAttribute("height", "$height")
         setAttribute("fill", fill)
+        if (init != null) init()
     }
 }
 
-fun Svg.rect(id: String, className: String? = null, x: Int, y: Int, width: Int, height: Int, fill: Color) {
-    val rect = Rect(id, className, x, y, width, height, fill)
+fun Svg.rect(
+    className: String? = null,
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    fill: Color,
+    init: (CustomTag.() -> Unit)? = null
+) {
+    val rect = Rect(className, x, y, width, height, fill)
     add(rect)
+    if (init != null) init()
 }
 
-class Line(x1: Int, y1: Int, x2: Int, y2: Int, style: Map<String, String>) : CustomTag("line") { // Use class instead of style
+class Line(x1: Int, y1: Int, x2: Int, y2: Int, style: Map<String, String>) :
+    CustomTag("line") { // Use class instead of style
     init {
         setAttribute("x1", "$x1")
         setAttribute("y1", "$y1")
@@ -65,3 +81,14 @@ fun Svg.line(x1: Int, y1: Int, x2: Int, y2: Int, style: Map<String, String>) {
     val line = Line(x1, y1, x2, y2, style)
     add(line)
 }
+
+class Text(className: String? = null, x: Int, y: Int, content: String) : CustomTag(
+    "text", className = className, content = content
+) {
+    init {
+        setAttribute("x", "$x")
+        setAttribute("y", "$y")
+    }
+}
+
+open class G : CustomTag("g")

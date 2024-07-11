@@ -45,7 +45,7 @@ class App : Application() {
                 outlineView(controller)
             }
             route("/view/boxes") {
-                taskBoardView()
+                taskBoardView(controller)
             }
         }
 

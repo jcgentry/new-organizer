@@ -23,10 +23,10 @@ class TaskBoard : Div() {
     private val clientYReporter = Div("Client y:")
 
     init {
-        require("css/taskboard.css")
+        require("css/task-board.css")
         vPanel {
             svg = svg(viewBox = ViewBox(0, 0, 30, 20)) {
-                rect(id = "zero", x = 0, y = 0, width = 30, height = 20, fill = "#fafafa")
+                rect(x = 0, y = 0, width = 30, height = 20, fill = "#fafafa")
             }
             hPanel {
                 add(mouseXReporter)
@@ -49,7 +49,7 @@ class TaskBoard : Div() {
 
 
     fun startDrag(component: Component, e: Event) {
-        if (component.getElement()!!.classList.contains("draggable") && e is MouseEvent) {
+        if (e is MouseEvent) {
             selectedElement = component as TaskCard
             val (posX, posY) = getMousePosition(component, e)
             offset = Pair(

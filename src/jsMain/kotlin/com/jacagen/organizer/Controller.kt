@@ -1,8 +1,8 @@
 package com.jacagen.organizer
 
-import com.jacagen.organizer.component.OutlineHelper
-import com.jacagen.organizer.component.OutlineNode
-import com.jacagen.organizer.component.TaskComponent
+import com.jacagen.organizer.component.*
+import io.kvision.html.div
+import kotlinx.atomicfu.Trace
 import kotlinx.coroutines.launch
 import kotlin.js.Console
 
@@ -35,9 +35,12 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
         suspend fun allOps(): List<Operation> = Model.allOps()
     }
 
-    val outline: OutlineNode<Task, TaskComponent>
     val tree: Tree<Task> = Tree { s -> console.log(s) }
+
+
+    val outline: OutlineNode<Task, TaskComponent>
     private val helper = Helper(this)
+    val taskBoard: TaskBoard = TaskBoard()
 
     init {
         if (ops.isEmpty()) {
@@ -48,6 +51,7 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
             ops.forEach { it.applyOp(tree) { s -> console.log(s)} }
         }
         outline = createNodesRecursive(tree.root!!, helper, isRoot = true)
+        createTaskBoardRecursive(tree.root!!)
     }
 
     private fun createNodesRecursive(node: Node<Task>, helper: Helper, isRoot: Boolean): OutlineNode<Task,TaskComponent> {
@@ -55,6 +59,19 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
         for (child in node.children)
             outlineNode.myChildList().add(createNodesRecursive(child, helper, false))
         return outlineNode
+    }
+
+    private fun createTaskBoardRecursive(node: Node<Task>, xOffset: Int = 0, yOffset: Int = 0, parent: TaskCard? = null): TaskBoard {
+        val card = TaskCard(content = node.payload.title, className = "draggable", x = xOffset * 3 + 5, -yOffset * 3 + 15, width = 6, height = 3, fill = "#888")
+        taskBoard.addCard(card)
+        if (parent != null)
+            taskBoard.addConnection(parent, card)
+        var x = 0
+        for (child in node.children) {
+            createTaskBoardRecursive(child, xOffset + x, yOffset + 2, card)
+            x += 3
+        }
+        return taskBoard
     }
 
     fun titleUpdated(task: Task, newTitle: String) {
