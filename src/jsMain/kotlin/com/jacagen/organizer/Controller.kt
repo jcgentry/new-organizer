@@ -62,7 +62,7 @@ class Controller private constructor (ops: List<Operation>, console: Console) {
     }
 
     private fun createTaskBoardRecursive(node: Node<Task>, xOffset: Int = 0, yOffset: Int = 0, parent: TaskCard? = null): TaskBoard {
-        val card = TaskCard(content = node.payload.title, className = "draggable", x = xOffset * 3 + 5, -yOffset * 3 + 15, width = 6, height = 3, fill = "#888")
+        val card = TaskCard(content = node.payload.title, className = "taskCard", x = xOffset * 3 + 5, -yOffset * 3 + 15, fill = "#888")
         taskBoard.addCard(card)
         if (parent != null)
             taskBoard.addConnection(parent, card)

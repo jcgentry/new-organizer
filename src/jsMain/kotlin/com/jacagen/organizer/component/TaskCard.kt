@@ -12,7 +12,7 @@ fun TaskBoard.taskCard(
     height: Int,
     fill: Color,
 ): TaskCard {
-    val card = TaskCard(content, className, x, y, width, height, fill)
+    val card = TaskCard(content, className, x, y, fill)
     addCard(card)
     return card
 }
@@ -25,15 +25,14 @@ class TaskCard(
     className: String,
     x: Int,
     y: Int,
-    width: Int,
-    height: Int,
     fill: Color,
 ) : G() {
-    private val rect = Rect(className, x, y, width, height, fill)
+    private val rect: Rect
     private val text: Text
 
     init {
         io.kvision.require("css/task-board.css")
+        rect = Rect(className, x, y, fill)
         text = Text(className = "taskCardTitle", x + X_TEXT_DELTA, y + Y_TEXT_DELTA, content)
         add(rect)
         add(text)

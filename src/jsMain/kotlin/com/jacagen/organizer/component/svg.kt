@@ -34,8 +34,6 @@ open class Rect(
     className: String? = null,
     x: Int,
     y: Int,
-    width: Int,
-    height: Int,
     fill: Color,
     init: (CustomTag.() -> Unit)? = null
 ) : CustomTag("rect", init = init) {
@@ -43,8 +41,6 @@ open class Rect(
         if (className != null) addCssClass(className)
         setAttribute("x", "$x")
         setAttribute("y", "$y")
-        setAttribute("width", "$width")
-        setAttribute("height", "$height")
         setAttribute("fill", fill)
         if (init != null) init()
     }
@@ -54,12 +50,10 @@ fun Svg.rect(
     className: String? = null,
     x: Int,
     y: Int,
-    width: Int,
-    height: Int,
     fill: Color,
     init: (CustomTag.() -> Unit)? = null
 ) {
-    val rect = Rect(className, x, y, width, height, fill)
+    val rect = Rect(className, x, y, fill)
     add(rect)
     if (init != null) init()
 }
